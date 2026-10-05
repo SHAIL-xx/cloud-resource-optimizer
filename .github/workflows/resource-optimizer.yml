@@ -25,7 +25,7 @@ jobs:
           
           echo "Waiting for LocalStack to boot on IPv4..."
           # Use 127.0.0.1 to avoid GitHub Actions IPv6 routing conflicts
-          timeout 60 bash -c 'until curl -s http://127.0.0.1:4566/_localstack/health > /dev/null; do sleep 2; done'
+          timeout 180 bash -c 'until curl -s http://127.0.0.1:4566/_localstack/health > /dev/null; do sleep 2; done'
           echo "LocalStack is up and running!"
 
       - name: Install Dependencies
