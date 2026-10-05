@@ -26,7 +26,7 @@ jobs:
 
       - name: Start LocalStack via Official CLI
         env:
-          LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: "1"
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
         run: |
           localstack start -d
           echo "Waiting for LocalStack to be fully ready..."
