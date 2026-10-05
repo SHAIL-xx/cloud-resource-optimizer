@@ -18,20 +18,22 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Start LocalStack Emulator
-        run: |
-          # Start LocalStack with EC2 enabled in ap-south-1
-          docker run -d -p 4566:4566 -e SERVICES=ec2 -e DEFAULT_REGION=ap-south-1 --name localstack localstack/localstack:latest
-          
-          echo "Waiting for LocalStack to boot on IPv4..."
-          # Use 127.0.0.1 to avoid GitHub Actions IPv6 routing conflicts
-          timeout 180 bash -c 'until curl -s http://127.0.0.1:4566/_localstack/health > /dev/null; do sleep 2; done'
-          echo "LocalStack is up and running!"
-
-      - name: Install Dependencies
+      - name: Install Dependencies & LocalStack CLI
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install localstack
+
+      - name: Start LocalStack via Official CLI
+        run: |
+          # The CLI automatically pulls the image, configures ports, and starts it in the background
+          localstack start -d
+          
+          echo "Waiting for LocalStack to be fully ready..."
+          # The CLI's native wait command is bulletproof
+          localstack wait -t 120
+          
+          echo "LocalStack is up and running!"
 
       - name: Provision Mock Data in CI
         env:
