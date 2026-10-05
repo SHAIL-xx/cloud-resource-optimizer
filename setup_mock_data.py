@@ -8,13 +8,13 @@ def create_mock_resources():
         print("Creating mock unattached EBS volumes...")
         # Create a 20GB gp3 volume
         ec2.create_volume(
-            AvailabilityZone='us-east-1a',
+            AvailabilityZone='ap-south-1a',
             Size=20,
             VolumeType='gp3'
         )
         # Create a 50GB gp2 volume
         ec2.create_volume(
-            AvailabilityZone='us-east-1b',
+            AvailabilityZone='ap-south-1b',
             Size=50,
             VolumeType='gp2'
         )

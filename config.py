@@ -22,5 +22,5 @@ def get_ec2_client():
     
     # Connects to real AWS using your ~/.aws/credentials profile
     print("[INFO] Connecting to real AWS environment...")
-    return boto3.client('ec2', region_name=os.getenv('AWS_DEFAULT_REGION', 'us-east-1'))
+    return boto3.client('ec2', region_name=os.getenv('AWS_DEFAULT_REGION', 'ap-south1'))
  
