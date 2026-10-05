@@ -25,14 +25,12 @@ jobs:
           pip install localstack
 
       - name: Start LocalStack via Official CLI
+        env:
+          LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: "1"
         run: |
-          # The CLI automatically pulls the image, configures ports, and starts it in the background
           localstack start -d
-          
           echo "Waiting for LocalStack to be fully ready..."
-          # The CLI's native wait command is bulletproof
           localstack wait -t 120
-          
           echo "LocalStack is up and running!"
 
       - name: Provision Mock Data in CI
