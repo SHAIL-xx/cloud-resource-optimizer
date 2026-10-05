@@ -8,6 +8,14 @@ on:
 jobs:
   audit:
     runs-on: ubuntu-latest
+    
+    # This spins up LocalStack right inside GitHub Actions!
+    services:
+      localstack:
+        image: localstack/localstack:latest
+        ports:
+          - 4566:4566
+          - 4571:4571
 
     steps:
       - name: Checkout Repository
@@ -23,11 +31,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Provision Mock Data in CI
+        env:
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_DEFAULT_REGION: us-east-1
+          USE_LOCAL_EMULATOR: "True"
+        run: python setup_mock_data.py
+
       - name: Run Optimization Audit (Dry Run)
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
           AWS_DEFAULT_REGION: us-east-1
-          USE_LOCAL_EMULATOR: "False"
+          USE_LOCAL_EMULATOR: "True"
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python main.py
