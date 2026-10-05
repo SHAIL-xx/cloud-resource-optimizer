@@ -20,9 +20,15 @@ jobs:
 
       - name: Start LocalStack Emulator
         run: |
-          docker run -d -p 4566:4566 localstack/localstack:latest
-          echo "Waiting for LocalStack to be ready..."
-          timeout 60 bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "\"initScripts\": \"initialized\""; do sleep 2; done'
+          # Start LocalStack with only EC2 enabled for faster boot times
+          docker run -d -p 4566:4566 -e SERVICES=ec2 -e DEFAULT_REGION=us-east-1 --name localstack localstack/localstack:latest
+          
+          echo "Waiting for LocalStack to be fully ready..."
+          # Give the container 10 seconds to start the boot process
+          sleep 10 
+          # Poll the health endpoint until it successfully returns the software version
+          timeout 60 bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "version"; do echo "waiting for API..."; sleep 3; done'
+          
           echo "LocalStack is up and running!"
 
       - name: Install Dependencies
