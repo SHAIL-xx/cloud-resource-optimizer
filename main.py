@@ -7,7 +7,7 @@ from remediator import cleanup_resources
 
 def generate_report(orphans, total_waste):
     print("\n" + "="*60)
-    print(" ☁️  CLOUD RESOURCE OPTIMIZATION REPORT ☁️")
+    print("  CLOUD RESOURCE OPTIMIZATION REPORT ")
     print("="*60)
     
     if not orphans:
@@ -34,16 +34,16 @@ def send_discord_alert(orphans, total_waste):
 
     if not orphans:
         color = 3066993  # Green
-        description = "✅ No idle resources found. Your environment is optimized!"
+        description = " No idle resources found. Your environment is optimized!"
     else:
         color = 15158332 # Red
-        description = f"🚨 Found **{len(orphans)}** orphaned resources wasting **${total_waste:.2f}** per month."
+        description = f" Found **{len(orphans)}** orphaned resources wasting **${total_waste:.2f}** per month."
 
     payload = {
         "username": "FinOps Bot",
         "embeds": [
             {
-                "title": "☁️ Cloud Resource Optimization Report",
+                "title": " Cloud Resource Optimization Report",
                 "description": description,
                 "color": color
             }
@@ -53,9 +53,9 @@ def send_discord_alert(orphans, total_waste):
     try:
         response = requests.post(webhook_url, json=payload)
         response.raise_for_status()
-        print("✅ Successfully pushed report to Discord!")
+        print("  Successfully pushed report to Discord!")
     except Exception as e:
-        print(f"❌ Failed to send Discord alert: {e}")
+        print(f"  Failed to send Discord alert: {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Find and delete orphaned AWS resources.")

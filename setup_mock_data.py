@@ -12,7 +12,7 @@ def create_mock_resources():
     ec2.allocate_address(Domain='vpc')
     ec2.allocate_address(Domain='vpc')
     
-    print("✅ Mock data provisioned successfully in LocalStack!")
+    print(" Mock data provisioned successfully in LocalStack!")
 
 if __name__ == "__main__":
     create_mock_resources()

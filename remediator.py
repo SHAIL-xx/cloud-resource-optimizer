@@ -18,7 +18,7 @@ def cleanup_resources(client, orphans, dry_run=True):
                         client.release_address(AllocationId=res['ResourceId'])
                     else:
                         client.release_address(PublicIp=res['ResourceId'])
-                print(f"✅ Deleted {res['Type']}: {res['ResourceId']}")
+                print(f"  Deleted {res['Type']}: {res['ResourceId']}")
             except Exception as e:
-                print(f"❌ Failed to delete {res['ResourceId']}: {e}")
+                print(f" Failed to delete {res['ResourceId']}: {e}")
     print("="*60 + "\n")
