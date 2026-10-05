@@ -19,9 +19,14 @@ jobs:
           python-version: '3.12'
 
       - name: Start LocalStack Emulator
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: 'latest'
+        run: |
+          # Start LocalStack with EC2 enabled in ap-south-1
+          docker run -d -p 4566:4566 -e SERVICES=ec2 -e DEFAULT_REGION=ap-south-1 --name localstack localstack/localstack:latest
+          
+          echo "Waiting for LocalStack to boot on IPv4..."
+          # Use 127.0.0.1 to avoid GitHub Actions IPv6 routing conflicts
+          timeout 60 bash -c 'until curl -s http://127.0.0.1:4566/_localstack/health > /dev/null; do sleep 2; done'
+          echo "LocalStack is up and running!"
 
       - name: Install Dependencies
         run: |
@@ -34,15 +39,15 @@ jobs:
           AWS_SECRET_ACCESS_KEY: test
           AWS_DEFAULT_REGION: ap-south-1
           USE_LOCAL_EMULATOR: "True"
-          LOCALSTACK_ENDPOINT: "http://localhost:4566"
+          LOCALSTACK_ENDPOINT: "http://127.0.0.1:4566"
         run: python setup_mock_data.py
 
       - name: Run Optimization Audit (Dry Run)
         env:
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
-          AWS_DEFAULT_REGION: us-east-1
+          AWS_DEFAULT_REGION: ap-south-1
           USE_LOCAL_EMULATOR: "True"
-          LOCALSTACK_ENDPOINT: "http://localhost:4566"
+          LOCALSTACK_ENDPOINT: "http://127.0.0.1:4566"
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python main.py
